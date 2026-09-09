@@ -18,3 +18,15 @@ export interface Prediction {
 	predicted_k: number;
 	model_version: string;
 }
+
+export interface TrafficObservation {
+	timestamp_utc: string;
+	q: number | null;
+	k: number | null;
+}
+
+export interface RoadHistory {
+	iu_ac: string;
+	observations: TrafficObservation[];
+	prediction: Prediction | null;
+}

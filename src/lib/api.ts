@@ -2,6 +2,7 @@ import type {
 	HealthResponse,
 	Prediction,
 	Road,
+	RoadHistory,
 } from "@/types/traffic";
 
 const API_URL =
@@ -34,5 +35,14 @@ export function getLatestPredictions(): Promise<Prediction[]> {
 export function getPrediction(iuAc: string): Promise<Prediction> {
 	return apiFetch<Prediction>(
 		`/predictions/${encodeURIComponent(iuAc)}`,
+	);
+}
+
+export function getRoadHistory(
+	iuAc: string,
+	hours = 24,
+): Promise<RoadHistory> {
+	return apiFetch<RoadHistory>(
+		`/roads/${encodeURIComponent(iuAc)}/history?hours=${hours}`,
 	);
 }

@@ -196,27 +196,6 @@ export default async function Home() {
 							roads={roads}
 							predictions={predictions}
 						/>
-
-						<section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-							<div className="border-b border-slate-200 px-5 py-4">
-								<h3 className="font-semibold text-slate-950">
-									Évolution du trafic
-								</h3>
-
-								<p className="mt-1 text-sm text-slate-500">
-									Historique et prévisions
-								</p>
-							</div>
-
-							<div className="flex min-h-64 items-center justify-center p-8">
-								<p className="max-w-xl text-center text-sm leading-6 text-slate-500">
-									Cette section sera alimentée par
-									un endpoint d&apos;historique
-									FastAPI avant l&apos;intégration
-									du graphique Recharts.
-								</p>
-							</div>
-						</section>
 					</div>
 				</main>
 			</div>
