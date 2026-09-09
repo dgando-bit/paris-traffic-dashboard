@@ -4,6 +4,11 @@ export interface HealthResponse {
 
 export interface Road {
 	iu_ac: string;
+	libelle: string | null;
+	latitude: number;
+	longitude: number;
+	road_length_m: number | null;
+	geo_shape: string | null;
 }
 
 export interface Prediction {
