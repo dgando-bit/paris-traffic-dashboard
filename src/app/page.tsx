@@ -1,5 +1,4 @@
-import TrafficMapWrapper from "@/components/map/traffic-map-wrapper";
-
+import TrafficDashboard from "@/components/dashboard/traffic-dashboard";
 import {
 	getLatestPredictions,
 	getRoads,
@@ -9,38 +8,6 @@ import type {
 	Prediction,
 	Road,
 } from "@/types/traffic";
-
-function getTrafficStatus(k: number) {
-	if (k < 15) return "Fluide";
-	if (k < 30) return "Pré-saturé";
-	if (k < 50) return "Saturé";
-
-	return "Bloqué";
-}
-
-function getStatusClass(k: number) {
-	if (k < 15) {
-		return "bg-emerald-50 text-emerald-700";
-	}
-
-	if (k < 30) {
-		return "bg-amber-50 text-amber-700";
-	}
-
-	if (k < 50) {
-		return "bg-orange-50 text-orange-700";
-	}
-
-	return "bg-red-50 text-red-700";
-}
-
-function formatDate(value: string) {
-	return new Intl.DateTimeFormat("fr-FR", {
-		dateStyle: "short",
-		timeStyle: "short",
-		timeZone: "Europe/Paris",
-	}).format(new Date(value));
-}
 
 export default async function Home() {
 	let predictions: Prediction[] = [];
@@ -85,17 +52,6 @@ export default async function Home() {
 		predictions.length > 0
 			? `v${predictions[0].model_version}`
 			: "—";
-
-	const lastPrediction =
-		predictions.length > 0
-			? predictions.reduce(
-				(latest, prediction) =>
-					prediction.prediction_timestamp_utc >
-					latest.prediction_timestamp_utc
-						? prediction
-						: latest,
-			)
-			: null;
 
 	const kpis = [
 		{
@@ -236,115 +192,10 @@ export default async function Home() {
 							))}
 						</section>
 
-						<section
-							id="map"
-							className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]"
-						>
-							<article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-								<div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-									<div>
-										<h3 className="font-semibold text-slate-950">
-											Carte du trafic parisien
-										</h3>
-
-										<p className="mt-1 text-sm text-slate-500">
-											Prévision de congestion par axe
-											routier
-										</p>
-									</div>
-
-									<span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-                    +1 h
-                  </span>
-								</div>
-
-								<div className="h-[460px]">
-									<TrafficMapWrapper
-										roads={roads}
-										predictions={predictions}
-									/>
-								</div>
-							</article>
-
-							<article
-								id="predictions"
-								className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-							>
-								<div className="border-b border-slate-200 px-5 py-4">
-									<h3 className="font-semibold text-slate-950">
-										Prédictions actuelles
-									</h3>
-
-									<p className="mt-1 text-sm text-slate-500">
-										{lastPrediction
-											? `Dernière mise à jour : ${formatDate(
-												lastPrediction.prediction_timestamp_utc,
-											)}`
-											: "Aucune prédiction disponible"}
-									</p>
-								</div>
-
-								<div className="max-h-[460px] overflow-y-auto">
-									{predictions.length === 0 ? (
-										<div className="p-6 text-sm text-slate-500">
-											Aucune donnée disponible.
-										</div>
-									) : (
-										predictions.map(
-											(prediction) => (
-												<div
-													key={prediction.iu_ac}
-													className="border-b border-slate-100 px-5 py-4 last:border-b-0"
-												>
-													<div className="flex items-start justify-between gap-4">
-														<div>
-															<p className="text-xs uppercase tracking-wide text-slate-400">
-																Axe
-															</p>
-
-															<p className="mt-1 font-semibold text-slate-950">
-																{
-																	prediction.iu_ac
-																}
-															</p>
-														</div>
-
-														<span
-															className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusClass(
-																prediction.predicted_k,
-															)}`}
-														>
-                              {getTrafficStatus(
-								  prediction.predicted_k,
-							  )}
-                            </span>
-													</div>
-
-													<div className="mt-4 flex items-end justify-between">
-														<div>
-															<p className="text-xs text-slate-500">
-																Occupation prévue
-															</p>
-
-															<p className="mt-1 text-xl font-semibold text-slate-900">
-																{prediction.predicted_k.toFixed(
-																	1,
-																)}{" "}
-																%
-															</p>
-														</div>
-
-														<p className="text-xs text-slate-400">
-															+1 h
-														</p>
-													</div>
-												</div>
-											),
-										)
-									)}
-								</div>
-							</article>
-						</section>
+						<TrafficDashboard
+							roads={roads}
+							predictions={predictions}
+						/>
 
 						<section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
 							<div className="border-b border-slate-200 px-5 py-4">

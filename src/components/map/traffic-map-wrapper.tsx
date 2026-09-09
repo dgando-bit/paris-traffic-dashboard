@@ -1,4 +1,3 @@
-// src/components/map/traffic-map-wrapper.tsx
 "use client";
 
 import dynamic from "next/dynamic";
@@ -18,16 +17,22 @@ const TrafficMap = dynamic(
 type TrafficMapWrapperProps = {
 	roads: Road[];
 	predictions: Prediction[];
+	selectedRoadId: string | null;
+	onSelectRoad: (iuAc: string) => void;
 };
 
 export default function TrafficMapWrapper({
 											  roads,
 											  predictions,
+											  selectedRoadId,
+											  onSelectRoad,
 										  }: TrafficMapWrapperProps) {
 	return (
 		<TrafficMap
 			roads={roads}
 			predictions={predictions}
+			selectedRoadId={selectedRoadId}
+			onSelectRoad={onSelectRoad}
 		/>
 	);
 }
