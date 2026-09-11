@@ -11,11 +11,17 @@ import {
 	YAxis,
 } from "recharts";
 
-import type { RoadHistory } from "@/types/traffic";
+import type {
+	PredictionHorizon,
+	RoadHistory,
+} from "@/types/traffic";
+
 
 type TrafficChartProps = {
 	history: RoadHistory;
+	horizon: PredictionHorizon;
 };
+
 
 type ChartPoint = {
 	timestamp: string;
@@ -23,36 +29,52 @@ type ChartPoint = {
 	prediction: number | null;
 };
 
+
 function formatHour(timestamp: string) {
-	return new Intl.DateTimeFormat("fr-FR", {
-		hour: "2-digit",
-		minute: "2-digit",
-		timeZone: "Europe/Paris",
-	}).format(new Date(timestamp));
+	return new Intl.DateTimeFormat(
+		"fr-FR",
+		{
+			hour: "2-digit",
+			minute: "2-digit",
+			timeZone: "Europe/Paris",
+		},
+	).format(
+		new Date(timestamp),
+	);
 }
+
 
 export default function TrafficChart({
 										 history,
+										 horizon,
 									 }: TrafficChartProps) {
 	const data: ChartPoint[] =
-		history.observations.map((observation) => ({
-			timestamp: observation.timestamp_utc,
-			actual: observation.k,
-			prediction: null,
-		}));
+		history.observations.map(
+			(observation) => ({
+				timestamp:
+				observation.timestamp_utc,
+				actual:
+				observation.k,
+				prediction:
+					null,
+			}),
+		);
 
-	const prediction = history.prediction;
+	const prediction =
+		history.prediction;
 
 	if (prediction) {
 		data.push({
-			timestamp: prediction.target_timestamp_utc,
+			timestamp:
+			prediction.target_timestamp_utc,
 			actual: null,
-			prediction: prediction.predicted_k,
+			prediction:
+			prediction.predicted_k,
 		});
 	}
 
 	return (
-		<div className="h-[320px] w-full">
+		<div className="h-[260px] w-full sm:h-[300px]">
 			<ResponsiveContainer
 				width="100%"
 				height="100%"
@@ -61,64 +83,118 @@ export default function TrafficChart({
 					data={data}
 					margin={{
 						top: 10,
-						right: 20,
-						bottom: 10,
-						left: 0,
+						right: 12,
+						bottom: 0,
+						left: -12,
 					}}
 				>
 					<CartesianGrid
 						strokeDasharray="3 3"
 						vertical={false}
+						stroke="#e2e8f0"
 					/>
 
 					<XAxis
 						dataKey="timestamp"
-						tickFormatter={formatHour}
-						minTickGap={30}
+						tickFormatter={
+							formatHour
+						}
+						minTickGap={28}
 						tickLine={false}
+						axisLine={false}
+						tick={{
+							fontSize: 11,
+							fill: "#94a3b8",
+						}}
 					/>
 
 					<YAxis
 						unit="%"
-						domain={[0, "auto"]}
+						domain={[
+							0,
+							"auto",
+						]}
 						tickLine={false}
+						axisLine={false}
+						tick={{
+							fontSize: 11,
+							fill: "#94a3b8",
+						}}
 					/>
 
 					<Tooltip
-						labelFormatter={(value) =>
-							new Intl.DateTimeFormat("fr-FR", {
-								dateStyle: "short",
-								timeStyle: "short",
-								timeZone: "Europe/Paris",
-							}).format(new Date(String(value)))
+						contentStyle={{
+							borderRadius:
+								12,
+							border:
+								"1px solid #e2e8f0",
+							boxShadow:
+								"0 10px 30px rgba(15, 23, 42, 0.08)",
+							fontSize:
+								12,
+						}}
+						labelFormatter={(
+							value,
+						) =>
+							new Intl.DateTimeFormat(
+								"fr-FR",
+								{
+									dateStyle:
+										"short",
+									timeStyle:
+										"short",
+									timeZone:
+										"Europe/Paris",
+								},
+							).format(
+								new Date(
+									String(
+										value,
+									),
+								),
+							)
 						}
 						formatter={(
 							value,
 							name,
 						) => [
-							`${Number(value).toFixed(1)} %`,
-							name === "actual"
+							`${Number(
+								value,
+							).toFixed(
+								1,
+							)} %`,
+							name ===
+							"actual"
 								? "Occupation réelle"
-								: "Prévision +1h",
+								: `Prévision +${horizon}h`,
 						]}
 					/>
 
 					<ReferenceLine
 						y={15}
+						stroke="#f59e0b"
 						strokeDasharray="4 4"
-						label="Pré-saturé"
+						strokeOpacity={
+							0.45
+						}
 					/>
 
 					<ReferenceLine
 						y={30}
+						stroke="#f97316"
 						strokeDasharray="4 4"
-						label="Saturé"
+						strokeOpacity={
+							0.45
+						}
 					/>
 
 					<ReferenceLine
 						y={50}
+						stroke="#ef4444"
 						strokeDasharray="4 4"
-						label="Bloqué"
+						strokeOpacity={
+							0.45
+						}
 					/>
 
 					<Line
@@ -138,7 +214,13 @@ export default function TrafficChart({
 						stroke="#ef4444"
 						strokeWidth={3}
 						dot={{
-							r: 6,
+							r: 5,
+							fill:
+								"#ef4444",
+							stroke:
+								"#ffffff",
+							strokeWidth:
+								2,
 						}}
 						connectNulls={false}
 					/>
