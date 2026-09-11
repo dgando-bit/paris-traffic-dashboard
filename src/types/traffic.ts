@@ -1,6 +1,10 @@
+export type PredictionHorizon = 1 | 2 | 3;
+
+
 export interface HealthResponse {
 	status: string;
 }
+
 
 export interface Road {
 	iu_ac: string;
@@ -11,19 +15,23 @@ export interface Road {
 	geo_shape: string | null;
 }
 
+
 export interface Prediction {
 	iu_ac: string;
 	prediction_timestamp_utc: string;
 	target_timestamp_utc: string;
+	horizon_hours: PredictionHorizon;
 	predicted_k: number;
 	model_version: string;
 }
+
 
 export interface TrafficObservation {
 	timestamp_utc: string;
 	q: number | null;
 	k: number | null;
 }
+
 
 export interface RoadHistory {
 	iu_ac: string;

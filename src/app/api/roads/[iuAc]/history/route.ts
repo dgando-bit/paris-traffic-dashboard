@@ -18,10 +18,19 @@ export async function GET(
 	const hours =
 		request.nextUrl.searchParams.get("hours") ?? "24";
 
+	const horizonHours =
+		request.nextUrl.searchParams.get(
+			"horizon_hours",
+		) ?? "1";
+
 	const response = await fetch(
 		`${API_URL}/roads/${encodeURIComponent(
 			iuAc,
-		)}/history?hours=${encodeURIComponent(hours)}`,
+		)}/history?hours=${encodeURIComponent(
+			hours,
+		)}&horizon_hours=${encodeURIComponent(
+			horizonHours,
+		)}`,
 		{
 			cache: "no-store",
 		},
